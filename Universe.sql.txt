@@ -1,0 +1,112 @@
+﻿CREATE DATABASE universe;
+
+
+\c universe;
+
+
+CREATE TABLE galaxy (
+    galaxy_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    type TEXT,
+    num_of_stars INT NOT NULL,
+    has_supermassive_black_hole BOOLEAN NOT NULL
+);
+
+
+CREATE TABLE star (
+    star_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    type VARCHAR(50),
+    mass NUMERIC(4, 2),
+    galaxy_id INT REFERENCES galaxy(galaxy_id) ON DELETE CASCADE,
+    is_main_sequence BOOLEAN NOT NULL
+);
+
+
+CREATE TABLE planet (
+    planet_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    radius_km NUMERIC(4, 2),
+    orbital_period_days INT,
+    star_id INT REFERENCES star(star_id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE moon (
+    moon_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    radius_km NUMERIC(4, 2),
+    planet_id INT REFERENCES planet(planet_id) ON DELETE CASCADE,
+    is_habitable BOOLEAN NOT NULL
+);
+
+
+CREATE TABLE satellite (
+    satellite_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    type VARCHAR(50) NOT NULL,
+    operational BOOLEAN NOT NULL,
+    planet_id INT REFERENCES planet(planet_id) ON DELETE CASCADE
+);
+
+
+INSERT INTO galaxy (name, type, num_of_stars, has_supermassive_black_hole) VALUES
+('Milky Way', 'Spiral', 1000, TRUE),
+('Andromeda', 'Spiral', 1000, TRUE),
+('Triangulum', 'Spiral', 400, TRUE);
+
+
+INSERT INTO star (name, type, mass, galaxy_id, is_main_sequence) VALUES
+('Sun', 'G-type', 1.00, 1, TRUE),
+('Sirius', 'A-type', 1.50, 1, TRUE),
+ ('Mihawk', 'G-type', 1.00, 1, TRUE),
+ ('Alpha tauri', 'A-type', 1.50, 1, TRUE),
+('Centaurus', 'Red dwarf', 0.10, 2, TRUE),
+('Proxima Centauri', 'Red dwarf', 0.10, 2, TRUE);
+
+
+INSERT INTO planet (name, radius_km, orbital_period_days, star_id) VALUES
+('Mercury', 0.39, 88, 1),
+('Venus', 0.95, 225, 1),
+('Earth', 1.00, 365, 1),
+('Mars', 0.53, 687, 1),
+('Jupiter', 11.21, 4333, 1),
+('Philanx', 0.39, 88, 1),
+('Sophos', 0.95, 225, 1),
+('Vitalia', 1.00, 365, 1),
+('Solaris', 0.53, 687, 1),
+('Trinetra', 11.21, 4333, 1),
+('Duality', 9.45, 10759, 1),
+('Saturn', 9.45, 10759, 1);
+
+
+INSERT INTO moon (name, radius_km, planet_id, is_habitable) VALUES
+('Moon', 0.27, 3, FALSE),
+('Phobos', 0.01, 4, FALSE),
+('Deimos', 0.01, 4, FALSE),
+('Europa', 0.25, 5, FALSE),
+('Ganymede', 0.41, 5, FALSE),
+('Selene', 0.27, 3, FALSE),
+('Phokos', 0.01, 4, FALSE),
+('Deimon', 0.01, 4, FALSE),
+('Fortuna', 0.25, 5, FALSE),
+('Gallaghar', 0.41, 5, FALSE),
+('Elsova', 0.39, 5, FALSE),
+('luna', 0.27, 3, FALSE),
+('Mnemos', 0.01, 4, FALSE),
+('Itu', 0.01, 4, FALSE),
+('Epochs', 0.25, 5, FALSE),
+('Voak', 0.41, 5, FALSE),
+('Feldsher', 0.25, 5, FALSE),
+('Prunator', 0.41, 5, FALSE),
+('Deathstar', 0.39, 5, FALSE),
+('Callisto', 0.39, 5, FALSE);
+
+
+INSERT INTO satellite (name, type, operational, planet_id) VALUES
+('Hubble Space Telescope', 'Telescope', TRUE, 3),
+('International Space Station', 'Space station', TRUE, 3),
+('Voyager 1', 'Probe', FALSE, 3),
+('New Horizons', 'Probe', TRUE, 6),
+('Pioneer 10', 'Probe', FALSE, 5),
+('Mars Reconnaissance Orbiter', 'Orbiter', TRUE, 4);
